@@ -6,12 +6,27 @@ import (
 	"math/rand"
 	"net/http"
 	"sync"
+
+	"github.com/prometheus/client_golang/prometheus"
+	"github.com/prometheus/client_golang/prometheus/promhttp"
 )
 
 var (
-	requestCounts = map[string]int{}
-	mu            sync.Mutex
+	requestCounts = prometheus.NewCounterVec(
+		prometheus.CounterOpts{
+			Name: "microservice_requests_total",
+			Help: "Total number of requests received",
+		},
+		[]string{"endpoint"},
+	)
+
+	mu sync.Mutex
 )
+
+func init() {
+	// Register the metrics with Prometheus
+	prometheus.MustRegister(requestCounts)
+}
 
 func healthHandler(w http.ResponseWriter, r *http.Request) {
 	recordRequest("/health")
@@ -25,7 +40,7 @@ func readyHandler(w http.ResponseWriter, r *http.Request) {
 
 func payloadHandler(w http.ResponseWriter, r *http.Request) {
 	recordRequest("/payload")
-	n := rand.Intn(20)
+	n := rand.Intn(20) + 1
 	fibonacci := fibonacciSequence(n)
 	response := map[string]interface{}{
 		"number":    n,
@@ -35,40 +50,26 @@ func payloadHandler(w http.ResponseWriter, r *http.Request) {
 	json.NewEncoder(w).Encode(response)
 }
 
-func metricsHandler(w http.ResponseWriter, r *http.Request) {
-	recordRequest("/metrics")
-	mu.Lock()
-	defer mu.Unlock()
-	w.Header().Set("Content-Type", "application/json")
-	json.NewEncoder(w).Encode(requestCounts)
-}
-
 func recordRequest(endpoint string) {
-	mu.Lock()
-	defer mu.Unlock()
-	requestCounts[endpoint]++
+	requestCounts.WithLabelValues(endpoint).Inc()
 }
 
 func fibonacciSequence(n int) []int {
-
-	fib := make([]int, n)
-
-	for i := 0; i <= n-1; i++ {
-		if i == 0 || i == 1 {
-			fib[i] = i
-		} else {
-			fib[i] = fib[i-1] + fib[i-2]
-		}
+	if n <= 0 {
+		return []int{}
 	}
-
-	return fib
+	seq := []int{0, 1}
+	for i := 2; i < n; i++ {
+		seq = append(seq, seq[i-1]+seq[i-2])
+	}
+	return seq
 }
 
 func main() {
 	http.HandleFunc("/health", healthHandler)
 	http.HandleFunc("/ready", readyHandler)
 	http.HandleFunc("/payload", payloadHandler)
-	http.HandleFunc("/metrics", metricsHandler)
+	http.HandleFunc("/metrics", promhttp.Handler().ServeHTTP) // Prometheus metrics endpoint
 
 	log.Println("Service is starting...")
 	server := &http.Server{

@@ -19,8 +19,10 @@ build:
 # Clean build artifacts
 clean:
 	@echo "Cleaning up..."
-	@rm -rf $(BUILD_DIR)
-	@rm -rf docker/$(BUILD_DIR)
+	-@rm -rf $(BUILD_DIR)
+	-@rm -rf docker/$(BUILD_DIR)
+	-@rm service-*.tgz
+	-@docker rmi service:latest
 	@echo "Clean complete."
 
 # Lint Go code (requires golint to be installed)
@@ -41,7 +43,7 @@ container: lint unit-test build
 helm: container
 	helm package helm/
 
-refresh-minikube-env:
+refresh-minikube-env: clean helm
 	-helm uninstall service 
 	sleep 3
 	-minikube image rm docker.io/library/service:latest

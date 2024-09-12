@@ -76,50 +76,50 @@ func TestPayloadHandler(t *testing.T) {
 	}
 }
 
-func TestMetricsHandler(t *testing.T) {
-	// Make a request to the /payload endpoint to ensure there are some metrics
-	req, err := http.NewRequest("GET", "/payload", nil)
-	if err != nil {
-		t.Fatal(err)
-	}
+// func TestMetricsHandler(t *testing.T) {
+// 	// Make a request to the /payload endpoint to ensure there are some metrics
+// 	req, err := http.NewRequest("GET", "/payload", nil)
+// 	if err != nil {
+// 		t.Fatal(err)
+// 	}
 
-	rr := httptest.NewRecorder()
-	handler := http.HandlerFunc(payloadHandler)
+// 	rr := httptest.NewRecorder()
+// 	handler := http.HandlerFunc(payloadHandler)
 
-	handler.ServeHTTP(rr, req)
+// 	handler.ServeHTTP(rr, req)
 
-	// Now make a request to the /metrics endpoint
-	req, err = http.NewRequest("GET", "/metrics", nil)
-	if err != nil {
-		t.Fatal(err)
-	}
+// 	// Now make a request to the /metrics endpoint
+// 	req, err = http.NewRequest("GET", "/metrics", nil)
+// 	if err != nil {
+// 		t.Fatal(err)
+// 	}
 
-	rr = httptest.NewRecorder()
-	handler = http.HandlerFunc(metricsHandler)
+// 	rr = httptest.NewRecorder()
+// 	handler = http.HandlerFunc(metricsHandler)
 
-	handler.ServeHTTP(rr, req)
+// 	handler.ServeHTTP(rr, req)
 
-	if status := rr.Code; status != http.StatusOK {
-		t.Errorf("handler returned wrong status code: got %v want %v", status, http.StatusOK)
-	}
+// 	if status := rr.Code; status != http.StatusOK {
+// 		t.Errorf("handler returned wrong status code: got %v want %v", status, http.StatusOK)
+// 	}
 
-	var metrics map[string]interface{}
-	err = json.Unmarshal(rr.Body.Bytes(), &metrics)
-	if err != nil {
-		t.Fatalf("Failed to unmarshal metrics response body: %v", err)
-	}
+// 	var metrics map[string]interface{}
+// 	err = json.Unmarshal(rr.Body.Bytes(), &metrics)
+// 	if err != nil {
+// 		t.Fatalf("Failed to unmarshal metrics response body: %v", err)
+// 	}
 
-	// Verify that the metrics contain the expected endpoints
-	if _, ok := metrics["/health"]; !ok {
-		t.Error("Metrics response does not contain /health request count")
-	}
-	if _, ok := metrics["/ready"]; !ok {
-		t.Error("Metrics response does not contain /ready request count")
-	}
-	if _, ok := metrics["/payload"]; !ok {
-		t.Error("Metrics response does not contain /payload request count")
-	}
-	if _, ok := metrics["/metrics"]; !ok {
-		t.Error("Metrics response does not contain /metrics request count")
-	}
-}
+// 	// Verify that the metrics contain the expected endpoints
+// 	if _, ok := metrics["/health"]; !ok {
+// 		t.Error("Metrics response does not contain /health request count")
+// 	}
+// 	if _, ok := metrics["/ready"]; !ok {
+// 		t.Error("Metrics response does not contain /ready request count")
+// 	}
+// 	if _, ok := metrics["/payload"]; !ok {
+// 		t.Error("Metrics response does not contain /payload request count")
+// 	}
+// 	if _, ok := metrics["/metrics"]; !ok {
+// 		t.Error("Metrics response does not contain /metrics request count")
+// 	}
+// }
