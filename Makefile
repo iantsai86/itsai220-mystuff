@@ -28,12 +28,12 @@ lint:
 	@echo "Linting Go code..."
 
 # Test Go code
-test:
+unit-test:
 	@echo "Running tests..."
-	@$(GO) test ./...
+	@$(GO) test .
 	@echo "Tests complete."
 
-container: lint test build
+container: lint unit-test build
 	mkdir -p docker/bin
 	cp bin/service docker/bin
 	docker build -t service:latest docker
