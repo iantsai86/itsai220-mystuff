@@ -8,16 +8,12 @@ BUILD_PATH=$(BUILD_DIR)/$(BINARY_NAME)
 # Default Go commands
 GO=go
 GOREBUILD=go build -o $(BUILD_PATH)
-GOFMT_FILES=$(shell find . -name '*.go' -not -path './vendor/*')
-
-# Default target
-all: build
 
 # Build the Go binary
 build:
 	@echo "Building the binary..."
 	@mkdir -p $(BUILD_DIR)
-	@$(GO) build -o $(BUILD_PATH) ./main.go
+	@GOOS=linux GOARCH=arm $(GO) build -o $(BUILD_PATH) ./main.go
 	@echo "Build complete: $(BUILD_PATH)"
 
 # Clean build artifacts
@@ -40,4 +36,4 @@ test:
 container: lint test build
 	mkdir -p docker/bin
 	cp bin/service docker/bin
-	docker build -t service:latest docker
+	docker build -t service:0.1 docker

@@ -23,3 +23,12 @@ To build the container
 ```
 make container
 ```
+
+## Local Development
+We will use minikube to run this service locally with docker
+
+### Setup
+If you don't have minikube setup, please follow the [installation guide](https://minikube.sigs.k8s.io/docs/) for your local machine
+
+If you don't have docker setup, please follow the [installation guide](https://docs.docker.com/engine/install/) for your local machine
+
