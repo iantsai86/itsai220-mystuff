@@ -36,4 +36,14 @@ test:
 container: lint test build
 	mkdir -p docker/bin
 	cp bin/service docker/bin
-	docker build -t service:0.1 docker
+	docker build -t service:latest docker
+
+helm: container
+
+
+refresh-minikube:
+	kubectl delete deployments service
+	sleep 3
+	minikube image rm docker.io/library/service:latest
+	minikube image load service:latest
+	kubectl create -f k8s/deployment.yaml
