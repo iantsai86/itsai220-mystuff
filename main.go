@@ -24,7 +24,7 @@ func readyHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func payloadHandler(w http.ResponseWriter, r *http.Request) {
-	// recordRequest("/payload")
+	recordRequest("/payload")
 	n := rand.Intn(20)
 	fibonacci := fibonacciSequence(n)
 	response := map[string]interface{}{
