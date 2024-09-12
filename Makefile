@@ -39,11 +39,11 @@ container: lint test build
 	docker build -t service:latest docker
 
 helm: container
+	helm package helm/
 
-
-refresh-minikube:
-	kubectl delete deployments service
+refresh-minikube-env:
+	-helm uninstall service 
 	sleep 3
-	minikube image rm docker.io/library/service:latest
-	minikube image load service:latest
-	kubectl create -f k8s/deployment.yaml
+	-minikube image rm docker.io/library/service:latest
+	-minikube image load service:latest
+	-helm install service service-0.1.0.tgz --set image.pullPolicy='Never'
