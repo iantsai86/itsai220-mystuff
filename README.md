@@ -2,18 +2,24 @@
 
 ## Description
 This is a simple go application that runs has 4 endpoints setup
- ```/health: Returns a 200 OK status if service is healthy
-○ /ready: Returns a 200 OK status and the service is ready to run.
-○ /payload: Calculate a Fibonacci sequence to the random number and
+```
+/health: Returns a 200 OK status if service is healthy
+/ready: Returns a 200 OK status and the service is ready to run.
+/payload: Calculate a Fibonacci sequence to the random number and
 return it as a JSON response with code 200.
-○ /metrics: Returns basic metrics about the service's operation.
+/metrics: Returns basic metrics about the service's operation.
+```
 
 ## Building the service
 The Dockerfile is defined in docker dir.
 Build steps are defined in Makefile.
 
 To build go binary
-``` make build 
+```
+make build 
+```
 
 To build the container 
-``` make container
+```
+make container
+```
