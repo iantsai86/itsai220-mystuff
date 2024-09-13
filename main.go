@@ -14,7 +14,7 @@ import (
 var (
 	requestCounts = prometheus.NewCounterVec(
 		prometheus.CounterOpts{
-			Name: "microservice_requests_total",
+			Name: "service_requests_total",
 			Help: "Total number of requests received",
 		},
 		[]string{"endpoint"},
@@ -73,7 +73,7 @@ func main() {
 
 	log.Println("Service is starting...")
 	server := &http.Server{
-		Addr:    ":8080",
+		Addr:    ":8081",
 		Handler: nil,
 	}
 
