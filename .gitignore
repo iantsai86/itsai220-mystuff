@@ -1,4 +1,4 @@
 bin/service
 docker/bin/service
 *.tgz
-test/test.go
+test/test
