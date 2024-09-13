@@ -7,5 +7,5 @@ FROM scratch
 COPY bin/service /service
 COPY --from=builder /etc/passwd /etc/passwd
 USER appuser
-EXPOSE 8080
+EXPOSE 8081
 ENTRYPOINT ["/service"]
