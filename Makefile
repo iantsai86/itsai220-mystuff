@@ -7,7 +7,6 @@ BUILD_PATH=$(BUILD_DIR)/$(BINARY_NAME)
 
 # Default Go commands
 GO=go
-GOREBUILD=go build -o $(BUILD_PATH)
 
 # Build the Go binary
 build:
@@ -35,6 +34,7 @@ unit-test:
 	@$(GO) test .
 	@echo "Tests complete."
 
+# Test build and pack it into a container
 container: lint unit-test build
 	mkdir -p docker/bin
 	cp bin/service docker/bin
@@ -43,6 +43,7 @@ container: lint unit-test build
 helm: container
 	helm package helm/
 
+# Helper make target to rebuild and redeploy on to minikube
 refresh-minikube-env: clean helm
 	-helm uninstall service 
 	sleep 3
@@ -50,6 +51,7 @@ refresh-minikube-env: clean helm
 	-minikube image load service:latest
 	-helm install service service-0.1.0.tgz --set image.pullPolicy='Never'
 
+# Help deploy Prometheus and Grafana
 install-monitoring:
 	helm repo add prometheus-community https://prometheus-community.github.io/helm-charts
 	helm repo add grafana https://grafana.github.io/helm-charts

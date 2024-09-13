@@ -1,3 +1,4 @@
+# Scrape configs
 prometheus:
   prometheusSpec:
     scrapeConfigs:
