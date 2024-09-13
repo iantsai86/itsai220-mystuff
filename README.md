@@ -9,13 +9,14 @@ This is a simple go application that runs has 4 endpoints setup
 return it as a JSON response with code 200.
 /metrics: Returns basic metrics about the service's operation.
 ```
-This service is deployed on kubernetes Deployment which has rolling upgrade incrementally replacing instances of the old version with instances of the new version which will provide us with zero-downtime deployment.
-Like a ReplicaSet, you can specifiy the number of replicas you want to run, from this you easily scale up using kubectl command or implament HPA.
 The service is running behind a loadbalancer to ensure traffic are distributed evenly as shown in this Grafana dashboard.
 
 ![Screenshot 2024-09-12 at 7 09 52 PM](https://github.com/user-attachments/assets/8942320c-8a2a-4a76-b76e-7c952c7581ca)
 
+This service is deployed on kubernetes Deployment which has rolling upgrade incrementally replacing instances of the old version with instances of the new version which will provide us with zero-downtime deployment.
+Also, we are using Helm to package it all into a chart, which provides version control and rollbacks and configuration management with values.yaml. With Helm you can also switch between deploying in Production or Develpment environments by adjust values or using ```--set``` switch. The best is this can all be integrated with a CI/CD pipelines for ease of deployments.
 
+However, in this case with minikube, as we are developing everything locally, you have to set image pull policy to Never since we don't have this image pushing to a public registry.
 
 ## Building the service
 Build steps are defined in Makefile.

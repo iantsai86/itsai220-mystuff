@@ -1,3 +1,6 @@
+#AppVersion
+APP_VERSION=0.1.0
+
 # Name of the binary
 BINARY_NAME=service
 
@@ -21,7 +24,7 @@ clean:
 	-@rm -rf $(BUILD_DIR)
 	-@rm -rf docker/$(BUILD_DIR)
 	-@rm service-*.tgz
-	-@docker rmi service:latest
+	-@docker rmi service:$(APP_VERSION)
 	@echo "Clean complete."
 
 # Lint Go code (requires golint to be installed)
@@ -38,18 +41,16 @@ unit-test:
 container: lint unit-test build
 	mkdir -p docker/bin
 	cp bin/service docker/bin
-	docker build -t service:latest docker
+	docker build -t service:$(APP_VERSION) docker
 
 helm: container
 	helm package helm/
 
 # Helper make target to rebuild and redeploy on to minikube
 refresh-minikube-env: clean helm
-	-helm uninstall service 
-	sleep 3
-	-minikube image rm docker.io/library/service:latest
-	-minikube image load service:latest
-	-helm install service service-0.1.0.tgz --set image.pullPolicy='Never'
+	-minikube image rm docker.io/library/service:$(APP_VERSION)
+	-minikube image load service:$(APP_VERSION)
+	-helm upgrade service service-0.1.0.tgz --set image.pullPolicy='Never'
 
 # Help deploy Prometheus and Grafana
 install-monitoring:
