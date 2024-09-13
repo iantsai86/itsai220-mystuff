@@ -12,7 +12,8 @@ return it as a JSON response with code 200.
 This service is deployed on kubernetes Deployment which has rolling upgrade incrementally replacing instances of the old version with instances of the new version which will provide us with zero-downtime deployment.
 Like a ReplicaSet, you can specifiy the number of replicas you want to run, from this you easily scale up using kubectl command or implament HPA.
 The service is running behind a loadbalancer to ensure traffic are distributed evenly as shown in this Grafana dashboard.
-![alt text](https://file%2B.vscode-resource.vscode-cdn.net/Users/ian/Desktop/Screenshot%202024-09-12%20at%207.09.52%E2%80%AFPM.png?version%3D1726196617852)
+
+![Screenshot 2024-09-12 at 7 09 52 PM](https://github.com/user-attachments/assets/8942320c-8a2a-4a76-b76e-7c952c7581ca)
 
 
 
