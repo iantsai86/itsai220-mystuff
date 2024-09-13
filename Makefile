@@ -59,4 +59,8 @@ install-monitoring:
 	helm repo update
 	helm install prometheus prometheus-community/prometheus -f monitoring/prometheus-values.yaml
 	helm install grafana grafana/grafana -f monitoring/grafana-values.yaml
-	
+
+# Execute the Test.go
+send-requests:
+	cd test && go build
+	./test/test

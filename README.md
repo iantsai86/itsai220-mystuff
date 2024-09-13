@@ -51,6 +51,11 @@ minikube start
 Once you have ran ```make helm``` and built all the artifacts you can run ```make refresh-minikube-env``` to load your local image into minikube environment and helm install your service from locally built chart.
 As there is a LoadBalancer set in the k8s services.yaml you will also need to run ```minikube tunnel``` on a separate terminal so minikube can setup an external IP with localhost IP.
 
+To execute send requests test.go run 
+```
+make send-requests
+```
+
 ### Monitoring Setup
 Please review the configurations in monitoring dir and then execute ```make install-monitoring``` which will install Prometheus and Grafana into minikube. 
 
