@@ -9,6 +9,12 @@ This is a simple go application that runs has 4 endpoints setup
 return it as a JSON response with code 200.
 /metrics: Returns basic metrics about the service's operation.
 ```
+This service is deployed on kubernetes Deployment which has rolling upgrade incrementally replacing instances of the old version with instances of the new version which will provide us with zero-downtime deployment.
+Like a ReplicaSet, you can specifiy the number of replicas you want to run, from this you easily scale up using kubectl command or implament HPA.
+The service is running behind a loadbalancer to ensure traffic are distributed evenly as shown in this Grafana dashboard.
+![alt text](https://file%2B.vscode-resource.vscode-cdn.net/Users/ian/Desktop/Screenshot%202024-09-12%20at%207.09.52%E2%80%AFPM.png?version%3D1726196617852)
+
+
 
 ## Building the service
 Build steps are defined in Makefile.
@@ -41,4 +47,25 @@ To start minikube run
 minikube start
 ```
 Once you have ran ```make helm``` and built all the artifacts you can run ```make refresh-minikube-env``` to load your local image into minikube environment and helm install your service from locally built chart.
-As there is a LoadBalancer set in the k8s services.yaml you will also need to run ```minikube tunnel``` on a separate terminal
+As there is a LoadBalancer set in the k8s services.yaml you will also need to run ```minikube tunnel``` on a separate terminal so minikube can setup an external IP with localhost IP.
+
+### Monitoring Setup
+Please review the configurations in monitoring dir and then execute ```make install-monitoring``` which will install Prometheus and Grafana into minikube. 
+
+#### Grafana
+On a separate terminal you can run port-forwarding to access the UI on your browser
+```
+export POD_NAME=$(kubectl get pods --namespace default -l "app.kubernetes.io/name=grafana,app.kubernetes.io/instance=grafana" -o jsonpath="{.items[0].metadata.name}")
+kubectl --namespace default port-forward $POD_NAME 3000
+```
+On the UI to login you can get admin credentials by running.
+```
+kubectl get secret --namespace default grafana -o jsonpath="{.data.admin-password}" | base64 --decode ; echo
+```
+
+#### Prometheus
+On a separate terminal you can run port-forwarding to access the UI on your browser
+```
+export POD_NAME=$(kubectl get pods --namespace default -l "app.kubernetes.io/name=prometheus,app.kubernetes.io/instance=prometheus" -o jsonpath="{.items[0].metadata.name}")
+kubectl --namespace default port-forward $POD_NAME 9090
+```
