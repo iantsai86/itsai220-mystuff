@@ -58,22 +58,24 @@ make send-requests
 ```
 
 ### Monitoring Setup
-Please review the configurations in monitoring dir and then execute ```make install-monitoring``` which will install Prometheus and Grafana into minikube. 
+In local setup we'll use kube-prometheus-stack [link here](https://github.com/prometheus-community/helm-charts/tree/main/charts/kube-prometheus-stack/) which will default provide us a set of Prometheus stack and Grafana. If there are values that need to be adjusted please use helm install / upgrade with a values.yaml.
+
+To setup a basic kube-prometheus-stack run ```make install-monitoring``` which will install Prometheus and Grafana into minikube. 
 
 #### Grafana
 On a separate terminal you can run port-forwarding to access the UI on your browser
 ```
-export POD_NAME=$(kubectl get pods --namespace default -l "app.kubernetes.io/name=grafana,app.kubernetes.io/instance=grafana" -o jsonpath="{.items[0].metadata.name}")
+export POD_NAME=$(kubectl get po -l "app.kubernetes.io/name=grafana" -o jsonpath='{.items[0].metadata.name}')
 kubectl --namespace default port-forward $POD_NAME 3000
 ```
 On the UI to login you can get admin credentials by running.
 ```
-kubectl get secret --namespace default grafana -o jsonpath="{.data.admin-password}" | base64 --decode ; echo
+kubectl get secret --namespace default prometheus-grafana -o jsonpath="{.data.admin-password}" | base64 --decode ; echo
 ```
 
 #### Prometheus
 On a separate terminal you can run port-forwarding to access the UI on your browser
 ```
-export POD_NAME=$(kubectl get pods --namespace default -l "app.kubernetes.io/name=prometheus,app.kubernetes.io/instance=prometheus" -o jsonpath="{.items[0].metadata.name}")
+export POD_NAME=$(kubectl get pods --namespace default -l "app.kubernetes.io/name=prometheus,app.kubernetes.io/instance=prometheus-kube-prometheus-prometheus" -o jsonpath="{.items[0].metadata.name}")
 kubectl --namespace default port-forward $POD_NAME 9090
 ```

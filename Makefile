@@ -48,17 +48,19 @@ helm: container
 
 # Helper make target to rebuild and redeploy on to minikube
 refresh-minikube-env: clean helm
-	-minikube image rm docker.io/library/service:$(APP_VERSION)
-	-minikube image load service:$(APP_VERSION)
-	-helm upgrade service service-0.1.0.tgz --set image.pullPolicy='Never'
+	-minikube image load $(BINARY_NAME):$(APP_VERSION)
+	@if helm status $(BINARY_NAME) > /dev/null 2>&1; then \
+		helm upgrade $(BINARY_NAME) $(BINARY_NAME)-$(APP_VERSION).tgz --set image.pullPolicy='Never' ; \
+	else \
+		echo "Helm installing $(BINARY_NAME)" ; \
+		helm install $(BINARY_NAME) $(BINARY_NAME)-$(APP_VERSION).tgz --set image.pullPolicy='Never' ; \
+	fi
 
-# Help deploy Prometheus and Grafana
+# Deploy Kube Prometheus Stack 
 install-monitoring:
 	helm repo add prometheus-community https://prometheus-community.github.io/helm-charts
-	helm repo add grafana https://grafana.github.io/helm-charts
 	helm repo update
-	helm install prometheus prometheus-community/prometheus -f monitoring/prometheus-values.yaml
-	helm install grafana grafana/grafana -f monitoring/grafana-values.yaml
+	helm install prometheus prometheus-community/kube-prometheus-stack
 
 # Execute the Test.go
 send-requests:

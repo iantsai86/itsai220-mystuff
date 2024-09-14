@@ -3,17 +3,14 @@ kind: Service
 metadata:
   name: {{ include "service.fullname" . }}
   labels:
+    app: {{ include "service.name" . }}
     {{- include "service.labels" . | nindent 4 }}
-  annotations:
-    prometheus.io/scrape: 'true'
-    prometheus.io/path: '/metrics'
-    prometheus.io/port: '8081'
 spec:
   type: {{ .Values.service.type }}
   ports:
   - protocol: TCP
     port: {{ .Values.service.port }}
     targetPort: {{ .Values.service.targetPort }}
-    name: http
+    name: {{ include "service.name" . }}
   selector:
     app: {{ include "service.name" . }}
