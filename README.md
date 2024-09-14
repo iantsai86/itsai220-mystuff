@@ -58,7 +58,9 @@ make send-requests
 ```
 
 ### Monitoring Setup
-Please review the configurations in monitoring dir and then execute ```make install-monitoring``` which will install Prometheus and Grafana into minikube. 
+In local setup we'll use kube-prometheus-stack [link here](https://github.com/prometheus-community/helm-charts/tree/main/charts/kube-prometheus-stack/) which will default provide us a set of Prometheus stack and Grafana. If there are values that need to be adjusted please use helm install / upgrade with a values.yaml.
+
+To setup a basic kube-prometheus-stack run ```make install-monitoring``` which will install Prometheus and Grafana into minikube. 
 
 #### Grafana
 On a separate terminal you can run port-forwarding to access the UI on your browser
