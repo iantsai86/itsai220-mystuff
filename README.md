@@ -11,8 +11,9 @@ return it as a JSON response with code 200.
 ```
 The service is running behind a loadbalancer to ensure traffic are distributed evenly as shown in this Grafana dashboard.
 
-![Screenshot 2024-09-12 at 7 09 52 PM](https://github.com/user-attachments/assets/8942320c-8a2a-4a76-b76e-7c952c7581ca)
-```PromQL avg(rate(service_requests_total[5m])) by (instance) ```
+![Screenshot 2024-09-14 at 1 54 44 PM](https://github.com/user-attachments/assets/04a1bacb-5881-479a-b69a-09670ab7cbd9)
+
+```PromQL sum(rate(service_requests_total[5m])) by (pod) ```
 
 This service is deployed on kubernetes Deployment which has rolling upgrade incrementally replacing instances of the old version with instances of the new version which will provide us with zero-downtime deployment.
 Also, we are using Helm to package it all into a chart, which provides version control and rollbacks and configuration management with values.yaml. With Helm you can also switch between deploying in Production or Develpment environments by adjust values or using ```--set``` switch. The best is this can all be integrated with a CI/CD pipelines for ease of deployments.
