@@ -9,7 +9,7 @@ import (
 
 func main() {
 	var wg sync.WaitGroup
-	url := "http://localhost:8081/payload"
+	url := "http://service.local/payload"
 	numRequests := 100
 
 	start := time.Now()
