@@ -62,6 +62,11 @@ install-monitoring:
 	helm repo update
 	helm install prometheus prometheus-community/kube-prometheus-stack
 
+install-nginx-ingress:
+	helm repo add ingress-nginx https://kubernetes.github.io/ingress-nginx
+	helm repo update
+	helm install my-ingress-nginx ingress-nginx/ingress-nginx
+
 # Execute the Test.go
 send-requests:
 	cd test && go build
