@@ -9,11 +9,18 @@ This is a simple go application that runs has 4 endpoints setup
 return it as a JSON response with code 200.
 /metrics: Returns basic metrics about the service's operation.
 ```
-The service is running behind a loadbalancer to ensure traffic are distributed evenly as shown in this Grafana dashboard.
+### Load Balancing K8s Load Balancer
+The service is running behind a K8s loadbalancer to ensure traffic are distributed evenly as shown in this Grafana dashboard.
 
 ![Screenshot 2024-09-14 at 1 54 44 PM](https://github.com/user-attachments/assets/04a1bacb-5881-479a-b69a-09670ab7cbd9)
 
 ```PromQL sum(rate(service_requests_total[5m])) by (pod) ```
+
+### Load Balancing Ingress-Nginx 
+The service configuration can also be configured with an Ingress Nginx controller to control traffic routes. With this setup it can be more cost effective as you don't need as many elastic IPs from either GCP or AWS when you create a K8s Load Balancer.
+Ingress Nginx also gives an option to either TLS termination or proxy passthrough depending on how your backend services wants to handle traffic.
+
+* Add a line ``` 127.0.0.1 service.local ``` at the bottom of /etc/hosts *
 
 This service is deployed on kubernetes Deployment which has rolling upgrade incrementally replacing instances of the old version with instances of the new version which will provide us with zero-downtime deployment.
 Also, we are using Helm to package it all into a chart, which provides version control and rollbacks and configuration management with values.yaml. With Helm you can also switch between deploying in Production or Develpment environments by adjust values or using ```--set``` switch. The best is this can all be integrated with a CI/CD pipelines for ease of deployments.
